@@ -1,3 +1,9 @@
+/****************************************************************************************
+ *   A program that creates three threads with the <pthread> API of UNIX systems,       *
+ *  witch each of them rows a dice once and generates a different value each time       *
+ *  the program runs.                                                                   *
+ *****************************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
