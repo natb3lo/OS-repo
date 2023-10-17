@@ -1,8 +1,8 @@
-/****************************************************************************************
- *   A program that creates three threads with the <pthread> API of UNIX systems,       *
- *  witch each of them rows a dice once and generates a different value each time       *
- *  the program runs.                                                                   *
- *****************************************************************************************/
+/*****************************************************************************************
+*    A program that creates "n" threads(based on how many of them you want)              *
+*    with the <pthread> API of UNIX systems, witch each of them rows a dice once         *
+*    and generates a different value each time the program runs.                         *                                                                   *
+*****************************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -92,43 +92,66 @@ void* row_dice(void* arg)
 
 int main()
 {
-    pthread_t t1, t2, t3;
+    pthread_t *th;
+    char buffer[80];
+    int numThreads;
+
     srand(time(NULL));
 
     printf("-----main Begin-----\n");
+    //draw_thread();
 
-    if((pthread_create(&t1, NULL, row_dice, "Thread 1")) != 0)
+    int isNum = 0;
+    do
     {
-        fprintf(stderr, "Error: <thread 1> creation has failed.\n");
-        exit(EXIT_FAILURE);
+        isNum = 1;
+        printf("Number of threads that will row the dice once: ");
+        fgets(buffer, 80, stdin);
+
+        for(int i=0; buffer[i]; i++)
+        {
+            if(buffer[0] == '\n')
+            {
+                printf("At least one thread must be created!\n");
+                isNum = 0;
+                break;
+            }
+            else if(!(buffer[i] >= '0' && buffer[i] <= '9') && !(buffer[i] == '\n'))
+            {
+                printf("Only numbers are acepted in this field!\n");
+                isNum = 0;
+                break;
+            }
+            
+        }
+    }while(!isNum);
+
+    numThreads = atoi(buffer);
+    th = malloc(numThreads*sizeof(pthread_t));
+    char threadArgs[numThreads][10];
+    
+    for(int i=0; i<numThreads; i++)
+    {
+        snprintf(threadArgs[i], 10, "Thread %d", i+1);
+        int rt = pthread_create(&th[i], NULL, row_dice, (void*)threadArgs[i]);
+        if(rt != 0)
+        {
+            fprintf(stderr, "Error: <thread %d> creation has failed.\n", i+1);
+            exit(EXIT_FAILURE);
+        }
     }
-    if((pthread_create(&t2, NULL, row_dice, "Thread 2")) != 0)
+    for(int i=0; i<numThreads; i++)
     {
-        fprintf(stderr, "Error: <thread 2> creation has failed.\n");
-        exit(EXIT_FAILURE);
-    }
-    if((pthread_create(&t3, NULL, row_dice, "Thread 3")) != 0)
-    {
-        fprintf(stderr, "Error: <thread 3> creation has failed.\n");
-        exit(EXIT_FAILURE);
+        int rw = pthread_join(th[i], NULL);
+        if(rw != 0)
+        {
+            fprintf(stderr, "Error: Main thread has failed to wait for <Thread %d>.\n", i+1);
+            exit(EXIT_FAILURE);
+        }
+
     }
 
-    if((pthread_join(t1, NULL)) != 0)
-    {
-        fprintf(stderr, "Error: Main thread has failed to wait for <Thread 1>.");
-        exit(EXIT_FAILURE);
-    }
-    if((pthread_join(t2, NULL)) != 0)
-    {
-        fprintf(stderr, "Error: Main thread has failed to wait for <Thread 2>.");
-        exit(EXIT_FAILURE);
-    }
-    if((pthread_join(t3, NULL)) != 0)
-    {
-        fprintf(stderr, "Error: Main thread has failed to wait for <Thread 3>.");
-        exit(EXIT_FAILURE);
-    }
-   
+    free(th);
 
     return 0;
 }
