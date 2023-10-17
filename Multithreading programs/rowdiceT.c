@@ -99,7 +99,6 @@ int main()
     srand(time(NULL));
 
     printf("-----main Begin-----\n");
-    //draw_thread();
 
     int isNum = 0;
     do
