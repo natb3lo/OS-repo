@@ -1,7 +1,7 @@
 /*****************************************************************************************
 *    A program that creates "n" threads(based on how many of them you want and at your   *
 *    own risk) with the <pthread> API of UNIX systems, witch each of them rows a dice    *
-*    how many times you want and generates the frequency that each die was rolled up     *
+*    as many times as you decide and generates the frequency that each die was rolled up *
 *    by each thread.                                                                     *
 *****************************************************************************************/
 
