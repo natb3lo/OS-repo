@@ -104,7 +104,6 @@ void* row_dice(void* arg)
             break;
         }
     } 
-    //printf("%s\n", (char*)arg);
 
     for(int i=0; i<strlen((char*)arg)+7; i++)
     {
